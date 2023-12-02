@@ -379,55 +379,6 @@ public class Proj3_LightNormalCubeMaps extends JFrame implements GLEventListener
 			1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f
 		};
 		
-		// Calculate normals for each face
-		Vector3f[] faceNormals = new Vector3f[pyramidPositions.length / 9];
-		for (int i = 0; i < pyramidPositions.length; i += 9) 
-		{
-		    Vector3f v1 = new Vector3f(pyramidPositions[i], pyramidPositions[i + 1], pyramidPositions[i + 2]);
-		    Vector3f v2 = new Vector3f(pyramidPositions[i + 3], pyramidPositions[i + 4], pyramidPositions[i + 5]);
-		    Vector3f v3 = new Vector3f(pyramidPositions[i + 6], pyramidPositions[i + 7], pyramidPositions[i + 8]);
-
-		    Vector3f edge1 = new Vector3f();
-		    Vector3f edge2 = new Vector3f();
-		    v2.sub(v1, edge1);
-		    v3.sub(v1, edge2);
-
-		    Vector3f faceNormal = new Vector3f();
-		    edge1.cross(edge2, faceNormal);
-		    faceNormal.normalize();
-
-		    faceNormals[i / 9] = faceNormal;
-		}
-
-		// Calculate vertex normals by averaging adjacent face normals
-		Vector3f[] vertexNormals = new Vector3f[pyramidPositions.length / 3];
-		for (int i = 0; i < pyramidPositions.length; i += 3) 
-		{
-		    Vector3f normalSum = new Vector3f();
-		    int count = 0;
-
-		    for (int j = 0; j < faceNormals.length; j++) 
-		    {
-		        Vector3f v = new Vector3f(pyramidPositions[i], pyramidPositions[i + 1], pyramidPositions[i + 2]);
-		        Vector3f faceNormal = faceNormals[j];
-
-		        // Check if the vertex is part of the current face
-		        if (v.equals(new Vector3f(pyramidPositions[j * 9], pyramidPositions[j * 9 + 1], pyramidPositions[j * 9 + 2])) ||
-		            v.equals(new Vector3f(pyramidPositions[j * 9 + 3], pyramidPositions[j * 9 + 4], pyramidPositions[j * 9 + 5])) ||
-		            v.equals(new Vector3f(pyramidPositions[j * 9 + 6], pyramidPositions[j * 9 + 7], pyramidPositions[j * 9 + 8]))) {
-		            normalSum.add(faceNormal);
-		            count++;
-		        }
-		    }
-
-		    if (count > 0) 
-		    {
-		        normalSum.div(count);
-		    }
-
-		    vertexNormals[i / 3] = normalSum;
-		}
-		
 		gl.glGenVertexArrays(vao.length, vao, 0);
 		gl.glBindVertexArray(vao[0]);
 		gl.glGenBuffers(vbo.length, vbo, 0);
